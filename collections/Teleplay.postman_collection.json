@@ -1,0 +1,108 @@
+{
+	"info": {
+		"_postman_id": "bcf525ca-45a8-4a43-946d-5f69e273d978",
+		"name": "Teleplay",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32241389"
+	},
+	"item": [
+		{
+			"name": "signin",
+			"request": {
+				"auth": {
+					"type": "basic"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "Email",
+							"value": "onlinedev0808@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "Password",
+							"value": "internet",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:4000/api/user/signin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"user",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "signup",
+			"request": {
+				"auth": {
+					"type": "basic"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "Email",
+							"value": "test1@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "Password",
+							"value": "internet",
+							"type": "text"
+						},
+						{
+							"key": "FirstName",
+							"value": "John",
+							"type": "text"
+						},
+						{
+							"key": "LastName",
+							"value": "Doe",
+							"type": "text"
+						},
+						{
+							"key": "DOB",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "Avatar",
+							"value": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:4000/api/user/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"user",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
