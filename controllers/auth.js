@@ -73,53 +73,49 @@ const signUp = async (req, res) => {
 
 const signIn = async (req, res) => {
   try {
-    let { Email, Password } = req.body;
-    // Check if the input parameters are empty
-    if (!Email || !Password) {
-      return res
-        .status(400)
-        .send({ message: "Input parameters cannot be empty." });
-    }
+    let userData = {
+      email: req.body.email,
+      password: req.body.password,
+    };
 
-    // validate email
-    if (!validateEmail(Email)) {
-      return res.status(400).send({ message: "Invalid email format." });
-    }
+    User.findUserByEmail(userData.email, (err, user) => {
+      if (err || !user) {
+        return res.status(500).send({
+          message: `User not found: ${err ? err.message : ""}`,
+        });
+      } else {
+        let passwordIsValid = bcrypt.compareSync(
+          userData.password,
+          user.password
+        );
 
-    connection.query(
-      "SELECT * FROM users WHERE Email = ?",
-      [Email],
-      async (error, results) => {
-        if (error) throw error;
-
-        if (results.length > 0) {
-          const comparison = await bcrypt.compare(
-            Password,
-            results[0].Password
-          );
-          if (comparison) {
-            const UserID = results[0].UserID;
-            const token = jwt.sign({ UserID }, process.env.JWT_SECRET, {
-              expiresIn: "2h",
-            });
-            return res.status(200).send({
-              message: "User logged in successfully",
-              token: token,
-            });
-          } else {
-            return res.status(401).json({
-              message: "Password is incorrect",
-            });
-          }
-        } else {
-          return res.status(404).json({
-            message: "User not found",
+        if (!passwordIsValid) {
+          res.status(401).send({
+            token: null,
+            message: "Invalid password",
           });
+          return;
         }
+
+        const token = generateToken(user, "15h");
+        res.status(200).send({
+          status: "User signed in successfully",
+          user: {
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            DOB: user.DOB,
+          },
+          token: token,
+        });
+        return;
       }
-    );
-  } catch (error) {
-    res.status(500).send();
+    });
+  } catch (err) {
+    res.status(500).send({
+      message: `An unexpected error occurred: ${err.message}`,
+    });
+    return;
   }
 };
 
