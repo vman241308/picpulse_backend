@@ -1,32 +1,18 @@
-// const Sequelize = require('sequelize');
-const mysql = require('mysql2');
+const mysql = require("mysql");
+const { logger } = require("../utils/logger");
+const { DB_HOST, DB_USER, DB_PASS, DB_NAME } = require("../utils/secrets");
 
-const DB_HOST = process.env.DB_HOST
-const DB_DATABASE = process.env.DB_DATABASE
-const DB_USERNAME = process.env.DB_USERNAME
-const DB_PASSWORD = process.env.DB_PASSWORD
-
-
-// const sequelize = new Sequelize(DB_DATABASE, DB_USERNAME, DB_PASSWORD, {
-//   dialect: 'mysql',
-//   host: DB_HOST
-// });
-const connection = mysql.createConnection({
+const db = mysql.createConnection({
   host: DB_HOST,
-  user: DB_USERNAME,
-  password: DB_PASSWORD,
-  database: DB_DATABASE
+  user: DB_USER,
+  password: DB_PASS,
+  database: DB_NAME,
+  multipleStatements: true,
 });
 
-
-
-// module.exports = sequelize;
-connection.connect(function(err) {
-  if (err) {
-    console.error('error connecting: ' + err.stack);
-    return;
-  }
-  console.log('connected as id ' + connection.threadId);
+connection.connect((err) => {
+  if (err) logger.error(err.message);
+  else logger.info("Database connected");
 });
 
-module.exports = connection;
+module.exports = conndection;
