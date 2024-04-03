@@ -4,7 +4,8 @@ const cors = require("cors");
 const path = require("path");
 const bodyParser = require("body-parser");
 
-// const authRoute = require("./routes/auth.route");
+// const authRoute = require("./routes/auth");
+const editorRoute = require("./routes/editor");
 
 const { httpLogStream } = require("./utils/logger");
 
@@ -22,6 +23,7 @@ app.use(bodyParser.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 
 // app.use("/api/auth", authRoute);
+app.use("/api/editor", editorRoute);
 
 app.use((err, req, res, next) => {
   res.status(err.statusCode || 500).send({
