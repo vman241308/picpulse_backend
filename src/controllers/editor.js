@@ -1,4 +1,5 @@
 const { exec } = require("child_process");
+const formidable = require("formidable");
 
 const processBgFg = async (req, res) => {
   res.send(req.body);
@@ -20,6 +21,14 @@ const processBgFg = async (req, res) => {
   // );
 };
 
+const upload = async (req, res, next) => {
+  const form = new formidable.IncomingForm();
+  form.parse(req, function (err, fields, files) {
+    console.log(files);
+  });
+};
+
 module.exports = {
   processBgFg: processBgFg,
-};
+  upload: upload
+}

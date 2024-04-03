@@ -4,7 +4,7 @@ const cors = require("cors");
 const path = require("path");
 const bodyParser = require("body-parser");
 
-// const authRoute = require("./routes/auth");
+// const authRoute = require("./routes/auth.route");
 const editorRoute = require("./routes/editor");
 
 const { httpLogStream } = require("./utils/logger");
