@@ -24,6 +24,12 @@ app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 
 // app.use("/api/auth", authRoute);
 app.use("/api/editor", editorRoute);
+app.get('/api/test', (req, res) => {
+  res.json({
+    status: 'success',
+    message: 'Test endpoint working fine!',
+  });
+});
 
 app.use((err, req, res, next) => {
   res.status(err.statusCode || 500).send({
