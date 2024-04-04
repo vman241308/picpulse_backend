@@ -22,7 +22,7 @@ const processBgFg = async (req, res) => {
   stream.on("close", (code) => {
     res.send({
       statusCode: 200,
-      message: code,
+      message: `http://3.143.204.91:4000/${req.body.fileName}`,
     });
   });
 };
