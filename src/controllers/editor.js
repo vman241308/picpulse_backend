@@ -1,6 +1,7 @@
 const { spawn, exec } = require("child_process");
 
 const processBgFg = async (req, res) => {
+  console.log("ffmpeg " + req.body.command.join(" "));
   stream = spawn("ffmpeg", req.body.command);
 
   stream.stdout.on("data", (data) => {
