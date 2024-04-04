@@ -1,25 +1,29 @@
-const { exec } = require("child_process");
+const { spawn, exec } = require("child_process");
 
 const processBgFg = async (req, res) => {
-  res.send(req.body);
-  const { command, bg, overlay } = req.body;
-  console.log("ffmpeg " + command.join(" "));
-  // exec(
-  //   `ffmpeg -stream_loop -1 -i ${req.body.backGround} -stream_loop -1 -i ${req.body.foreGround} -filter_complex ${filter_complex} -map [out] -r 30 -c:a copy -t 2.493 -preset ultrafast output_1711964804504.mp4`,
-  //   (error, stdout, stderr) => {
-  //     if (error) {
-  //       console.error(`error: ${error.message}`);
-  //       return;
-  //     }
+  stream = spawn("ffmpeg", req.body.command);
 
-  //     if (stderr) {
-  //       console.error(`stderr: ${stderr}`);
-  //       return;
-  //     }
+  stream.stdout.on("data", (data) => {
+    console.log(`stdout: ${data}`);
+  });
 
-  //     console.log(`stdout:\n${stdout}`);
-  //   }
-  // );
+  stream.stderr.on("data", (data) => {
+    console.log(`stderr : ${data}`);
+  });
+
+  stream.on("error", (error) => {
+    res.send({
+      statusCode: 500,
+      message: error,
+    });
+  });
+
+  stream.on("close", (code) => {
+    res.send({
+      statusCode: 200,
+      message: code,
+    });
+  });
 };
 
 module.exports = {
