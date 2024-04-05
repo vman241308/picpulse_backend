@@ -34,6 +34,7 @@ const uploader = async (fileName) => {
       if (err) {
         reject(err); // reject promise if there is an error
       } else {
+        fs.unlinkSync(path.join(__dirname, `public/${fileName}`));
         resolve(data.Location); // resolve promise with the file location
       }
     });
