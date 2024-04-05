@@ -2,11 +2,10 @@ const { spawn, exec } = require("child_process");
 const { uploader } = require("../utils/uploader");
 
 const processBgFg = async (req, res) => {
-  console.log("ffmpeg " + req.body.command.join(" "));
-  stream = spawn("ffmpeg", req.body.command);
-
-  stream.stdout.on("data", (data) => {
-    console.log(`stdout: ${data}`);
+  const uploadResult = await uploader("videoshot.mp4");
+  res.send({
+    statusCode: 200,
+    message: uploadResult,
   });
 
   stream.stderr.on("data", (data) => {
