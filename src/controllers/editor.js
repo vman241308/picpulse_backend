@@ -1,5 +1,5 @@
 const { spawn, exec } = require("child_process");
-const uploader = require("../utils/uploader");
+const { uploader } = require("../utils/uploader");
 
 const processBgFg = async (req, res) => {
   console.log("ffmpeg " + req.body.command.join(" "));
@@ -21,16 +21,11 @@ const processBgFg = async (req, res) => {
   });
 
   stream.on("close", async (code) => {
-    await uploader(req.body.fileName)
-      .then((result) => {
-        res.send({
-          statusCode: 200,
-          message: result.body.path,
-        });
-      })
-      .catch((error) => {
-        console.log(`stderr : ${error}`);
-      });
+    const uploadResult = await uploader(req.body.fileName);
+    res.send({
+      statusCode: 200,
+      message: uploadResult,
+    });
   });
 };
 

@@ -19,17 +19,28 @@ const uploader = async (fileName) => {
     fileName.split(".").pop();
   videoFileS3Key = videoFileS3Key.replaceAll(" ", "_");
 
+  const fileContent = fs.readFileSync(
+    path.join(__dirname, `public/${fileName}`)
+  );
+
   const params = {
     Bucket: process.env.BUCKET_NAME,
     Key: videoFileS3Key,
-    Body: fs.createReadStream(path.join(__dirname, `public/${fileName}`)),
+    Body: fileContent,
   };
 
-  try {
-    return s3.upload(params);
-  } catch (error) {
+  return new Promise((resolve, reject) => {
+    s3.upload(params, (err, data) => {
+      if (err) {
+        reject(err); // reject promise if there is an error
+      } else {
+        resolve(data.Location); // resolve promise with the file location
+      }
+    });
+  }).catch((error) => {
+    console.log(error);
     return error;
-  }
+  });
 };
 
 module.exports = {
