@@ -1,4 +1,5 @@
 const { spawn, exec } = require("child_process");
+const uploader = require("../utils/uploader");
 
 const processBgFg = async (req, res) => {
   console.log("ffmpeg " + req.body.command.join(" "));
@@ -19,10 +20,11 @@ const processBgFg = async (req, res) => {
     });
   });
 
-  stream.on("close", (code) => {
+  stream.on("close", async (code) => {
+    const processedFileLink = await uploader(res.body.fileName);
     res.send({
       statusCode: 200,
-      message: `http://3.143.204.91:4000/${req.body.fileName}`,
+      message: processedFileLink,
     });
   });
 };
