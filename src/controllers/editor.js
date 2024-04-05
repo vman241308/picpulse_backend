@@ -21,11 +21,16 @@ const processBgFg = async (req, res) => {
   });
 
   stream.on("close", async (code) => {
-    const processedFileLink = await uploader(res.body.fileName);
-    res.send({
-      statusCode: 200,
-      message: processedFileLink,
-    });
+    await uploader(req.body.fileName)
+      .then((result) => {
+        res.send({
+          statusCode: 200,
+          message: result.body.path,
+        });
+      })
+      .catch((error) => {
+        console.log(`stderr : ${error}`);
+      });
   });
 };
 

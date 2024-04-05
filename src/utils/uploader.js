@@ -11,19 +11,25 @@ const uploader = async (fileName) => {
   });
   const s3 = new AWS.S3();
 
+  let videoFileS3Key =
+    fileName.split(".").slice(0, -1).join(".") +
+    "-" +
+    new Date().getTime() +
+    "." +
+    fileName.split(".").pop();
+  videoFileS3Key = videoFileS3Key.replaceAll(" ", "_");
+
   const params = {
     Bucket: process.env.BUCKET_NAME,
-    Key: "myFile.txt",
+    Key: videoFileS3Key,
     Body: fs.createReadStream(path.join(__dirname, `public/${fileName}`)),
   };
 
-  s3.upload(params, (err, data) => {
-    if (err) {
-      return "Error uploading file:", err;
-    } else {
-      return data.Location;
-    }
-  });
+  try {
+    return s3.upload(params);
+  } catch (error) {
+    return error;
+  }
 };
 
 module.exports = {
