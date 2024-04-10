@@ -26,7 +26,10 @@ const processBgFg = async (req, res) => {
         req.body.fileName
       );
 
-      console.log(uploadResult);
+      res.send({
+        statusCode: 200,
+        message: uploadResult,
+      });
     });
   } catch (error) {
     console.error(`Caught exception: ${error}`);
@@ -38,30 +41,32 @@ const processBgFg = async (req, res) => {
 };
 
 function aspectRatioVideo(command, fileName) {
-  try {
-    console.log("Started ffmpeg command");
-    stream = spawn("ffmpeg", command);
+  return new Promise((resolve, reject) => {
+    try {
+      stream = spawn("ffmpeg", command);
 
-    stream.stdout.on("data", (data) => {
-      console.log(`stdout: ${data}`);
-    });
+      stream.stdout.on("data", (data) => {
+        console.log(`stdout: ${data}`);
+      });
 
-    stream.stderr.on("data", (data) => {
-      console.log(`stderr : ${data}`);
-    });
+      stream.stderr.on("data", (data) => {
+        console.log(`stderr : ${data}`);
+      });
 
-    stream.on("error", (error) => {
-      return error;
-    });
+      stream.on("error", (error) => {
+        console.error(`Caught exception: ${error}`);
+        reject(error);
+      });
 
-    stream.on("close", async (code) => {
-      const uploadResult = await uploader(fileName);
-      return uploadResult;
-    });
-  } catch (error) {
-    console.error(`Caught exception: ${error}`);
-    return error;
-  }
+      stream.on("close", async (code) => {
+        const uploadResult = await uploader(fileName);
+        resolve(uploadResult);
+      });
+    } catch (error) {
+      console.error(`Caught exception: ${error}`);
+      reject(error);
+    }
+  });
 }
 
 module.exports = {
