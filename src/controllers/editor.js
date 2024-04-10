@@ -3,7 +3,6 @@ const { uploader } = require("../utils/uploader");
 
 const processBgFg = async (req, res) => {
   try {
-    console.log("ffmpeg " + req.body.command.join(" "));
     stream = spawn("ffmpeg", req.body.command);
 
     stream.stdout.on("data", (data) => {
@@ -22,11 +21,12 @@ const processBgFg = async (req, res) => {
     });
 
     stream.on("close", async (code) => {
-      const uploadResult = await uploader(req.body.fileName);
-      res.send({
-        statusCode: 200,
-        message: uploadResult,
-      });
+      const uploadResult = await aspectRatioVideo(
+        req.body.aspectCommand,
+        req.body.fileName
+      );
+
+      console.log(uploadResult);
     });
   } catch (error) {
     console.error(`Caught exception: ${error}`);
@@ -36,6 +36,33 @@ const processBgFg = async (req, res) => {
     });
   }
 };
+
+function aspectRatioVideo(command, fileName) {
+  try {
+    console.log("Started ffmpeg command");
+    stream = spawn("ffmpeg", command);
+
+    stream.stdout.on("data", (data) => {
+      console.log(`stdout: ${data}`);
+    });
+
+    stream.stderr.on("data", (data) => {
+      console.log(`stderr : ${data}`);
+    });
+
+    stream.on("error", (error) => {
+      return error;
+    });
+
+    stream.on("close", async (code) => {
+      const uploadResult = await uploader(fileName);
+      return uploadResult;
+    });
+  } catch (error) {
+    console.error(`Caught exception: ${error}`);
+    return error;
+  }
+}
 
 module.exports = {
   processBgFg: processBgFg,
