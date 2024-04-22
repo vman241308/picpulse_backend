@@ -2,6 +2,8 @@ const AWS = require("aws-sdk");
 const fs = require("fs");
 const path = require("path");
 
+let directory = path.join(__dirname, "public");
+
 const uploader = async (fileName) => {
   try {
     // Set the region and access keys
@@ -40,23 +42,25 @@ const uploader = async (fileName) => {
           reject(err); // reject promise if there is an error
         } else {
           // Delete the local file after upload
-          fs.unlink(path.join(__dirname, `public/${fileName}`), (unlinkError) => {
-            if (unlinkError) {
-              console.error(`Error deleting file ${fileName}:`, unlinkError);
-              resolve(data.Location);
-            } else {
-              resolve(data.Location); // resolve promise with the file location
+          fs.readdir(directory, (err, files) => {
+            if (err) throw err;
+
+            for (let file of files) {
+              fs.unlink(path.join(directory, file), (err) => {
+                if (err) throw reject(err);
+                resolve(data.Location);
+              });
             }
           });
         }
       });
     });
   } catch (error) {
-    console.error('An unexpected error occurred:', error);
+    console.error("An unexpected error occurred:", error);
     return error;
   }
 };
 
 module.exports = {
-uploader: uploader,
+  uploader: uploader,
 };
