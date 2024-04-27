@@ -3,6 +3,11 @@ const { uploader } = require("../utils/uploader");
 
 const processBgFg = async (req, res) => {
   try {
+    console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    console.log(req.body.command);
+    console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    console.log(req.body.aspectCommand);
+
     stream = spawn("ffmpeg", req.body.command);
 
     stream.stdout.on("data", (data) => {
